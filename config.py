@@ -21,7 +21,7 @@ You can create and manage projects at https://console.developers.google.com
 import os
 
 # The secret key is used by Flask to encrypt session cookies.
-SECRET_KEY = 'secret'
+SECRET_KEY = 'secretnevermind'
 
 # There are three different ways to store the data in the application.
 # You can choose 'datastore', 'cloudsql', or 'mongodb'. Be sure to
@@ -52,19 +52,22 @@ CLOUDSQL_CONNECTION_NAME = 'frejun-8869d:us-central1:frejun-mysql-second'
 #
 # Alternatively, you could use a local MySQL instance for testing.
 LOCAL_SQLALCHEMY_DATABASE_URI = (
-    'mysql+pymysql://{user}:{password}@localhost/{database}').format(
+    'mysql+mysqldb://{user}:{password}@localhost/{database}').format(
         user=CLOUDSQL_USER, password=CLOUDSQL_PASSWORD,
         database=CLOUDSQL_DATABASE)
 
 # When running on App Engine a unix socket is used to connect to the cloudsql
 # instance.
+
+# instead of using pymysql, I would be using mysqldb
 LIVE_SQLALCHEMY_DATABASE_URI = (
-    'mysql+pymysql://{user}:{password}@localhost/{database}'
+    'mysql+mysqldb://{user}:{password}@localhost/{database}'
     '?unix_socket=/cloudsql/{connection_name}').format(
         user=CLOUDSQL_USER, password=CLOUDSQL_PASSWORD,
         database=CLOUDSQL_DATABASE, connection_name=CLOUDSQL_CONNECTION_NAME)
 
-if os.environ.get('GAE_APPENGINE_HOSTNAME'):
+#if os.environ.get('GAE_APPENGINE_HOSTNAME'):
+if (os.getenv('SERVER_SOFTWARE') and os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')):
     SQLALCHEMY_DATABASE_URI = LIVE_SQLALCHEMY_DATABASE_URI
 else:
     SQLALCHEMY_DATABASE_URI = LOCAL_SQLALCHEMY_DATABASE_URI
